@@ -1,3 +1,4 @@
+// src/index.ts
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -49,7 +50,9 @@ const io = new SocketIOServer(server, {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT || 3000);
+
+
 
 // Rate limiting
 const limiter = rateLimit({
@@ -156,11 +159,14 @@ async function startServer() {
     logger.info('Job queues initialized');
 
     // Start server
-    server.listen(Number(PORT), '0.0.0.0', () => {
-      logger.info(`Server running on port ${PORT}`);
-      logger.info(`Environment: ${process.env.NODE_ENV}`);
-      logger.info(`Server accessible at: http://localhost:${PORT} and http://192.168.1.13:${PORT}`);
+    server.listen(PORT, () => {
+      logger.info(`Server listening on port ${PORT}`);
     });
+    // server.listen(Number(PORT), '0.0.0.0', () => {
+    //   logger.info(`Server running on port ${PORT}`);
+    //   logger.info(`Environment: ${process.env.NODE_ENV}`);
+    //   logger.info(`Server accessible at: http://localhost:${PORT} and http://192.168.1.13:${PORT}`);
+    // });
   } catch (error) {
     logger.error('Failed to start server:', error);
     process.exit(1);
