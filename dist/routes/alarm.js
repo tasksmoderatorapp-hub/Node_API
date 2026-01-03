@@ -232,17 +232,31 @@ router.post('/:id/snooze', async (req, res) => {
             where: { id, userId },
         });
         if (!alarm) {
-            throw new types_1.NotFoundError('Alarm');
+            logger_1.logger.info('Alarm not found or already deleted for snooze', { alarmId: id, userId });
+            return res.json({
+                success: true,
+                message: 'Alarm snoozed successfully',
+            });
         }
         logger_1.logger.info('Alarm snoozed', { alarmId: id, duration, userId });
-        res.json({
+        return res.json({
             success: true,
             message: 'Alarm snoozed successfully',
         });
     }
     catch (error) {
+        if (error.code === 'P2025') {
+            logger_1.logger.info('Alarm already deleted during snooze', { alarmId: req.params.id, userId: req.user.id });
+            return res.json({
+                success: true,
+                message: 'Alarm snoozed successfully',
+            });
+        }
         logger_1.logger.error('Failed to snooze alarm:', error);
-        throw error;
+        return res.status(500).json({
+            success: false,
+            error: 'Failed to snooze alarm',
+        });
     }
 });
 router.post('/:id/dismiss', async (req, res) => {

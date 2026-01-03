@@ -297,7 +297,7 @@ router.post('/:id/snooze', async (req: AuthenticatedRequest, res: Response) => {
     // by adding the duration (in minutes) to the current alarm time
     logger.info('Alarm snoozed', { alarmId: id, duration, userId });
 
-    res.json({
+   return res.json({
       success: true,
       message: 'Alarm snoozed successfully',
     });

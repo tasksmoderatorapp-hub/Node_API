@@ -43,6 +43,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+console.log(" APP STARTED");
 const errorHandler_1 = require("./middleware/errorHandler");
 const logger_1 = require("./utils/logger");
 const database_1 = require("./utils/database");
@@ -78,7 +79,7 @@ const io = new socket_io_1.Server(server, {
         methods: ['GET', 'POST']
     }
 });
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT || 3000);
 const limiter = (0, express_rate_limit_1.default)({
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'),
     max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'),
@@ -153,10 +154,8 @@ async function startServer() {
         logger_1.logger.info('Redis connected successfully');
         await (0, queueService_1.initializeQueues)();
         logger_1.logger.info('Job queues initialized');
-        server.listen(Number(PORT), '0.0.0.0', () => {
-            logger_1.logger.info(`Server running on port ${PORT}`);
-            logger_1.logger.info(`Environment: ${process.env.NODE_ENV}`);
-            logger_1.logger.info(`Server accessible at: http://localhost:${PORT} and http://192.168.1.13:${PORT}`);
+        server.listen(PORT, () => {
+            logger_1.logger.info(`Server listening on port ${PORT}`);
         });
     }
     catch (error) {
